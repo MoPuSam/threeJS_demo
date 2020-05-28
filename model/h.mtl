@@ -1,0 +1,114 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# 创建的文件:19.11.2019 09:27:43
+
+newmtl Material__37
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.5880 0.5880 0.5880
+	map_Ka D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_Eye1.png
+	map_Kd D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_Eye1.png
+
+newmtl Material__38
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.5880 0.5880 0.5880
+	map_Ka D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyA1.png
+	map_Kd D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyA1.png
+
+newmtl Material__39
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.5880 0.5880 0.5880
+	map_Ka D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyB1.png
+	map_Kd D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyB1.png
+
+newmtl Material__40
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.5880 0.5880 0.5880
+	map_Ka D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyC1.png
+	map_Kd D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyC1.png
+
+newmtl Material__51
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyA1.png
+	map_Kd D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyA1.png
+
+newmtl Material__62
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyD1.png
+	map_Kd D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_BodyD1.png
+
+newmtl Material__73
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_LightningA.png
+	map_Kd D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_LightningA.png
+
+newmtl Material__106
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_LightningB.png
+	map_Kd D:\GameModel\9172\Pokemon XY\Kyurem\images\pm0646_13_LightningB.png

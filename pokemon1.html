@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>three.js canvas - geometry - cube</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #f0f0f0;
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<script src="js/three.js"></script>
+
+<script src="js/renderers/Projector.js"></script>
+<script src="js/renderers/CanvasRenderer.js"></script>
+<script src="js/renderers/Projector.js"></script>
+<script src="js/loaders/MTLLoader.js"></script>
+<script src="js/loaders/OBJLoader.js"></script>
+<script src="js/loaders/DDSLoader.js"></script>
+<script src="js/libs/inflate.min.js"></script>
+<script src="js/libs/stats.min.js"></script>
+
+<script>
+
+    var container, stats;
+
+    var camera, scene, renderer;
+
+    var fbxC;
+    var plane;
+
+    var targetRotation = 0;
+    var targetRotationOnMouseDown = 0;
+
+    var windowHalfX = window.innerWidth / 2;
+    var windowHalfY = window.innerHeight / 2;
+
+    init();
+    animate();
+
+    function init() {
+
+        container = document.createElement( 'div' );
+        document.body.appendChild( container );
+
+        var info = document.createElement( 'div' );
+        info.style.position = 'absolute';
+        info.style.top = '10px';
+        info.style.width = '100%';
+        info.style.textAlign = 'center';
+        info.innerHTML = 'Kyurem';
+        container.appendChild( info );
+
+        camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+        camera.position.y = 150;
+        camera.position.z = 500;
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0x000000 );
+
+
+        var directionalLight = new THREE.DirectionalLight( 0xffffff );
+        directionalLight.position.set( -5, 5, 5).normalize();
+        scene.add( directionalLight );
+
+        var pointlight = new THREE.PointLight(0x63d5ff, 1, 1000);
+        pointlight.position.set(0, 0, 200);
+        scene.add( pointlight );
+        var pointlight2 = new THREE.PointLight(0xffffff, 1, 1000);
+        pointlight2.position.set(-200, 200, 200);
+        scene.add( pointlight2 );
+        var pointlight3 = new THREE.PointLight(0xffffff, 1.5, 1000);
+        pointlight3.position.set(-200, 200, 0);
+        scene.add( pointlight3 );
+
+        scene.add( new THREE.PointLightHelper( pointlight3 ) );
+        scene.add( new THREE.PointLightHelper( pointlight2 ) );
+        scene.add( new THREE.PointLightHelper( pointlight ) );
+
+
+        var onProgress = function ( xhr ) {
+            if ( xhr.lengthComputable ) {
+                var percentComplete = xhr.loaded / xhr.total * 100;
+                console.log( Math.round(percentComplete, 2) + '% downloaded' );
+            }
+        };
+
+        var onError = function ( xhr ) {
+        };
+
+
+        var manager = new THREE.LoadingManager();
+        manager.onProgress = function ( item, loaded, total ) {
+            console.log( item, loaded, total );
+        };
+
+        THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+        var mtlLoader = new THREE.MTLLoader();
+        //设置文件夹的路径  ：更改名字就ok
+        mtlLoader.setPath('textures/h/');
+        mtlLoader.setBaseUrl('textures/h/');
+        //下面就是文件名
+        mtlLoader.load('h.mtl', function(materials) {
+
+            materials.preload();
+            //实例化obj加载方法
+            var objLoader = new THREE.OBJLoader(manager);
+            //设置mtl文件的材质
+            objLoader.setMaterials(materials);
+            //文件夹
+            objLoader.setPath('model/');
+            //文件名
+            objLoader.load('h.obj', function(object) {
+                //模型的x、y、z轴的位置
+                object.position.y = 0;
+                object.position.x = -45;
+
+                //将模型添加到场景当中
+                fbxC = object;
+                scene.add(fbxC);
+                //打印出模型   是group对象
+                console.log(object);
+            }, onProgress, onError);
+        });
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        container.appendChild( renderer.domElement );
+
+        stats = new Stats();
+        container.appendChild( stats.dom );
+
+        window.addEventListener( 'resize', onWindowResize, false );
+
+    }
+
+    function onWindowResize() {
+
+        windowHalfX = window.innerWidth / 2;
+        windowHalfY = window.innerHeight / 2;
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+    }
+
+
+    function animate() {
+
+        requestAnimationFrame( animate );
+
+        stats.begin();
+        render();
+        stats.end();
+
+    }
+
+    function render() {
+        //var timer = Date.now() * -0.00000001;
+        //targetRotation = targetRotationOnMouseDown - 0.05;
+        //fbxC.rotation.y += ( targetRotation - fbxC.rotation.y ) * 0.05;
+        fbxC.rotateY(Math.PI/4*0.01);
+        renderer.render( scene, camera );
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>THREE.js Loader</title>
+    <style>
+        html, body{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            font-family: Helvetica;
+        }
+        #stage, video, canvas{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        canvas{
+            z-index: 99;
+        }
+    </style>
+</head>
+<body>
+<div id="stage" style="position: relative; overflow: hidden;">
+    <div id="k" style="position: absolute; width: 300px; height: 200px;text-align: center;color:#fff;z-index: 999;background-color: rgba(0,0,255,.5)">
+        <h1>KyuremWhite</h1>
+        <p>Hi! Welcome To The ThreeJS World!!!</p>
+    </div>
+</div>
+<script type='text/javascript' src='js/jquery-1.9.1.min.js'></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/eruda/1.2.6/eruda.min.js"></script>
+<script type="text/javascript" src="js/three.js"></script>
+<script type="text/javascript" src="js/libs/inflate.min.js"></script>
+<script type="text/javascript" src="js/controls/OrbitControls.js"></script>
+<script type="text/javascript" src="js/loaders/FBXLoader.js"></script>
+<script type="text/javascript" src="js/loaders/OBJLoader.js"></script>
+<script type="text/javascript" src="js/loaders/MTLLoader.js"></script>
+<script type="text/javascript" src="js/loaders/TGALoader.js"></script>
+<script type="text/javascript" src="js/postprocessing/EffectComposer.js"></script>
+<script type="text/javascript" src="js/postprocessing/RenderPass.js"></script>
+<script type="text/javascript" src="js/postprocessing/ShaderPass.js"></script>
+<script type="text/javascript" src="js/postprocessing/GlitchPass.js"></script>
+<script src="js/shaders/DigitalGlitch.js"></script>
+<script type="text/javascript" src="js/shaders/CopyShader.js"></script>
+<script src="js/libs/dat.gui.min.js"></script>
+<script type="text/javascript">
+    var winHeight = $(window).height();
+    var winWidth = $(window).width();
+    $("#stage").height(winHeight);
+    $("#stage").width(winWidth);
+    $("#k").css("margin-left",winWidth/2-150);
+    $("#k").css("margin-top",winHeight/2-100);
+    //窗口大小改变时进行重置
+    $(window).resize(function(){
+        var winHeight = $(window).height();
+        var winWidth = $(window).width();
+        $("#stage").height(winHeight);
+        $("#stage").width(winWidth);
+        $("#k").css("margin-left",winWidth/2-150);
+        $("#k").css("margin-top",winHeight/2-100);
+    })
+
+    var u = navigator.userAgent;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; // android终端
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); // ios终端
+    var isWeiXin = !!u.match(/MicroMessenger/i); // 微信
+
+    var stage = document.querySelector('#stage');
+    var container;
+    var scene, camera, renderer, controls;
+    var SCREEN_WIDTH =  window.innerWidth;
+    var SCREEN_HEIGHT = window.innerHeight;
+    var angle = 90;
+    var nearest = 1;
+    var farthest = 1000;
+    var mixers = new Array();
+    var clock = new THREE.Clock();
+    var fbxC;
+    var composer;
+
+    init();
+
+    function init(){
+        container = document.createElement( 'div' );
+        document.body.appendChild( container );
+
+        var info = document.createElement( 'div' );
+        info.style.position = 'absolute';
+        info.style.top = '10px';
+        info.style.width = '100%';
+        info.style.textAlign = 'center';
+        info.innerHTML = 'DEMO';
+        container.appendChild( info );
+
+        stage.appendChild(container);
+        // 创建场景
+        scene = new THREE.Scene();
+        // 创建相机
+        //camera =  new THREE.PerspectiveCamera(angle, SCREEN_WIDTH / SCREEN_HEIGHT, nearest, farthest);//投影摄像机
+        //正视摄像机
+        camera = new THREE.OrthographicCamera(window.innerWidth / -16, window.innerWidth / 16, window.innerHeight / 16, window.innerHeight / -16, -200, 500);
+        camera.position.set(-53, -3, -9);
+        // 环境光
+        scene.add(new THREE.AmbientLight(4210752, 3));
+        // 平行光
+        var light = new THREE.DirectionalLight(16777215, 1);
+        light.position.set(0, 50, 50);
+        scene.add(light);
+        // 坐标系
+        //var axes = new THREE.AxisHelper(30);
+        //scene.add(axes);
+
+        // 加载提示
+        var manager = new THREE.LoadingManager();
+        manager.onProgress = function(item, loaded, total){
+            console.log(item, loaded, total);
+        };
+
+        var onProgress0 = function(xhr){
+            if(xhr.lengthComputable){
+                var percentComplete = xhr.loaded / xhr.total * 100;
+                console.log(Math.round(percentComplete, 2) + '% downloaded0');
+            }
+        };
+        var onProgress1 = function(xhr){
+            if(xhr.lengthComputable){
+                var percentComplete = xhr.loaded / xhr.total * 100;
+                console.log(Math.round(percentComplete, 2) + '% downloaded1');
+            }
+        };
+
+        var onError = function(xhr){
+            console.error(xhr);
+        };
+
+
+
+        var fbx_loader = new THREE.FBXLoader(manager);
+
+        var group = new THREE.Group();
+        // fbx动画
+        fbx_loader.load('model/fly.FBX', function(object){
+
+            object.mixer = new THREE.AnimationMixer(object);
+            mixers.push(object.mixer);
+
+            var action = object.mixer.clipAction(object.animations[0]);
+            action.play();
+            object.scale.set(2,2,2);
+            object.scale.multiplyScalar(.5);
+            object.position.set(0, -50, 0);
+            object.traverse(function (item) {
+                if(item instanceof THREE.Mesh){
+                    item.castShadow = true;
+                    item.receiveShadow = true;
+                    item.material.emissive=new THREE.Color(255,255,255);
+                    item.material.emissiveIntensity=1;
+                    item.material.emissiveMap=item.material.map;
+                    item.material.vertexShader = $('#fish-vertexShader').innerText;
+                    item.material.fragmentShader = $('#fish-fragmentShader').innerText;
+                }
+            });
+            group.add(object);
+            //scene.add(object);
+        }, onProgress0, onError);
+
+        var texturePlante = THREE.ImageUtils.loadTexture("textures/Diffuse_2K - 副本.png",null,function(t){});//模型贴图
+        var loader = new THREE.FBXLoader( manager );
+        loader.load('model/Earth.fbx', function (fbx) {
+            //fbx.scale.set(.1,.1,.1);
+            fbx.scale.set(.4,.4,.4);
+            fbx.position.y = -150;
+            fbx.traverse(function (item) {
+                var material = new THREE.MeshPhongMaterial({
+                    map:texturePlante
+                });
+                item.material=material;
+                if(item instanceof THREE.Mesh){
+                    item.castShadow = true;
+                    item.receiveShadow = true;
+                    item.material.vertexShader = $('#fish-vertexShader').innerText;
+                    item.material.fragmentShader = $('#fish-fragmentShader').innerText;
+                }
+            });
+            fbxC = fbx;
+            group.add(fbxC);
+            //scene.add(fbxC);
+        },onProgress1, onError);
+        scene.add(group);
+
+        // 创建渲染器
+        renderer = new THREE.WebGLRenderer({
+            antialias: true,    // 平滑效果
+            alpha: true,    // canvas背景透明
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+       composer = new THREE.EffectComposer( renderer );
+        var renderPass = new THREE.RenderPass( scene, camera );
+        composer.addPass( renderPass );
+
+        var glitchPass = new THREE.GlitchPass();
+        glitchPass.renderToScreen = true;
+        composer.addPass( glitchPass );
+
+        container.appendChild(renderer.domElement);
+
+        // 创建控制器
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 0, 0);
+
+        animate();
+
+        window.addEventListener('resize', onWindowResize, false);
+    }
+
+    function animate(){
+        requestAnimationFrame(animate);
+        render();
+        composer.render();
+    }
+
+    function render(){
+        var delta = clock.getDelta();
+        if (mixers.length > 0) {
+            for (var i = 0; i < mixers.length; i ++) {
+                mixers[i].update(delta);
+            }
+        }
+        controls.update();
+        fbxC.rotateX(Math.PI/4*0.01);
+        //console.log("摄像机位置："+camera.position.x+","+camera.position.y+","+camera.position.z)
+        renderer.render( scene, camera );
+    }
+
+    // 窗口改变重置摄像头
+    function onWindowResize(){
+        SCREEN_WIDTH = window.innerWidth;
+        SCREEN_HEIGHT = window.innerHeight;
+        renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        composer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+        camera.updateProjectionMatrix();
+    }
+
+</script>
+</body>
+</html>
